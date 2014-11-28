@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">插件系统</string>
+     
+    <string name="action_settings">Settings</string>
+    <string name="action_about">about</string>
+
+</resources>
