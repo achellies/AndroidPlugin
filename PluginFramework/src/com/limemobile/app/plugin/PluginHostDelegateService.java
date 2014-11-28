@@ -143,7 +143,7 @@ public class PluginHostDelegateService extends Service implements
         } else {
             return super.startService(service);
         }
-        return PluginClientManager.sharedInstance(this).startService(service);
+        return PluginClientManager.sharedInstance(this).startService(this, service);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class PluginHostDelegateService extends Service implements
         } else {
             return super.stopService(service);
         }
-        return PluginClientManager.sharedInstance(this).stopService(service);
+        return PluginClientManager.sharedInstance(this).stopService(this, service);
     }
 
     @Override

@@ -191,7 +191,8 @@ public class PluginHostApplication extends Application {
 				}
 			}
 		}
-		return PluginClientManager.sharedInstance(this).startService(service);
+		return PluginClientManager.sharedInstance(this).startService(this,
+				service);
 	}
 
 	@Override
@@ -225,7 +226,8 @@ public class PluginHostApplication extends Application {
 				}
 			}
 		}
-		return PluginClientManager.sharedInstance(this).stopService(service);
+		return PluginClientManager.sharedInstance(this).stopService(this,
+				service);
 	}
 
 }
