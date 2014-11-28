@@ -125,7 +125,7 @@ public class PluginDelegateServiceImpl {
         return mTheme;
     }
 
-    public IPluginService getRemoteActivity() {
+    public IPluginService getRemoteService() {
         return mDelegatedService;
     }
 }

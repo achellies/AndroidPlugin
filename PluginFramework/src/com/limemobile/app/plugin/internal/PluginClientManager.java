@@ -46,10 +46,11 @@ import com.limemobile.app.plugin.PluginHostDelegateService;
 import dalvik.system.DexClassLoader;
 
 public class PluginClientManager {
-	public static final String INTENT_EXTRA_PLUGIN_CLIENT_DEX_PATH = "extra_plugin_dex_path";
-	public static final String INTENT_EXTRA_PLUGIN_CLIENT_ACTIVITY_CLASS = "extra_plugin_activity_class";
-	public static final String INTENT_EXTRA_PLUGIN_CLIENT_SERVICE_CLASS = "extra_plugin_service_class";
-	public static final String INTENT_EXTRA_PLUGIN_CLIENT_PACKAGE_NAME = "extra_plugin_packagename";
+	static final String INTENT_EXTRA_PLUGIN_CLIENT_DEX_PATH = "extra_plugin_dex_path";
+	static final String INTENT_EXTRA_PLUGIN_CLIENT_ACTIVITY_CLASS = "extra_plugin_activity_class";
+	static final String INTENT_EXTRA_PLUGIN_CLIENT_SERVICE_CLASS = "extra_plugin_service_class";
+	static final String INTENT_EXTRA_PLUGIN_CLIENT_CONTENT_PROVIDER_CLASS = "extra_plugin_content_provider_class";
+	static final String INTENT_EXTRA_PLUGIN_CLIENT_PACKAGE_NAME = "extra_plugin_packagename";
 
 	private static PluginClientManager sInstance;
 
