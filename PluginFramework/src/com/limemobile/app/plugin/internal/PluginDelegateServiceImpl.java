@@ -67,7 +67,7 @@ public class PluginDelegateServiceImpl {
     }
 
     private void initializeServiceInfo() {
-        PackageInfo packageInfo = mPluginClient.mClientPackageServiceInfo;
+        PackageInfo packageInfo = mPluginClient.mClientPackageInfo;
         if ((packageInfo.services != null) && (packageInfo.services.length > 0)) {
             if (TextUtils.isEmpty(mPluginClientServiceClass)) {
                 mPluginClientServiceClass = packageInfo.services[0].name;

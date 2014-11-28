@@ -104,15 +104,17 @@ public class PluginClientManager {
         // by host.
         PackageManager packageManager = mContext.getPackageManager();
 
-        PackageInfo packageActivityInfo = packageManager.getPackageArchiveInfo(
-                dexPath, PackageManager.GET_ACTIVITIES);
-        PackageInfo packageServiceInfo = packageManager.getPackageArchiveInfo(
-                dexPath, PackageManager.GET_SERVICES);
-        if (packageActivityInfo == null) {
+        int flags = PackageManager.GET_ACTIVITIES | PackageManager.GET_CONFIGURATIONS
+                | PackageManager.GET_INSTRUMENTATION | PackageManager.GET_PERMISSIONS | PackageManager.GET_PROVIDERS
+                | PackageManager.GET_RECEIVERS | PackageManager.GET_SERVICES | PackageManager.GET_SIGNATURES;
+        
+        PackageInfo packageInfo = packageManager.getPackageArchiveInfo(
+                dexPath, flags);
+        if (packageInfo == null) {
             return null;
         }
 
-        final String packageName = packageActivityInfo.packageName;
+        final String packageName = packageInfo.packageName;
         PluginClientInfo pluginPackage = mPluginClientPackages.get(packageName);
         if (pluginPackage == null) {
             DexClassLoader dexClassLoader = createDexClassLoader(dexPath);
@@ -120,7 +122,7 @@ public class PluginClientManager {
             Resources resources = createResources(assetManager);
             pluginPackage = new PluginClientInfo(packageName, dexPath,
                     dexClassLoader, assetManager, resources,
-                    packageActivityInfo, packageServiceInfo);
+                    packageInfo);
             mPluginClientPackages.put(packageName, pluginPackage);
         }
         if (!mPluginClientDexPaths.containsKey(packageName)) {

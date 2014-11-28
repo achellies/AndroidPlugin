@@ -34,27 +34,24 @@ public class PluginClientInfo {
     public final DexClassLoader mClassLoader;
     public final AssetManager mAssetManager;
     public final Resources mResources;
-    public final PackageInfo mClientPackageActivityInfo;
-    public final PackageInfo mClientPackageServiceInfo;
+    public final PackageInfo mClientPackageInfo;
 
     public PluginClientInfo(String packageName, String path,
             DexClassLoader loader, AssetManager assetManager,
-            Resources resources, PackageInfo packageActivityInfo,
-            PackageInfo packageServiceInfo) {
+            Resources resources, PackageInfo packageInfo) {
         this.mPackageName = packageName;
         this.mPath = path;
         this.mClassLoader = loader;
         this.mAssetManager = assetManager;
         this.mResources = resources;
-        this.mClientPackageActivityInfo = packageActivityInfo;
-        this.mClientPackageServiceInfo = packageServiceInfo;
+        this.mClientPackageInfo = packageInfo;
     }
 
     public String getDefaultActivity() {
         if (TextUtils.isEmpty(mDefaultActivity)) {
-            if (mClientPackageActivityInfo.activities != null
-                    && mClientPackageActivityInfo.activities.length > 0) {
-                mDefaultActivity = mClientPackageActivityInfo.activities[0].name;
+            if (mClientPackageInfo.activities != null
+                    && mClientPackageInfo.activities.length > 0) {
+                mDefaultActivity = mClientPackageInfo.activities[0].name;
             }
         }
         return mDefaultActivity;

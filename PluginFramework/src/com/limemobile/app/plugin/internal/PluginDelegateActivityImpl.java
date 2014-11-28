@@ -69,7 +69,7 @@ public class PluginDelegateActivityImpl {
     }
 
     private void initializeActivityInfo() {
-        PackageInfo packageInfo = mPluginClient.mClientPackageActivityInfo;
+        PackageInfo packageInfo = mPluginClient.mClientPackageInfo;
         if ((packageInfo.activities != null)
                 && (packageInfo.activities.length > 0)) {
             if (TextUtils.isEmpty(mPluginClientActivityClass)) {
