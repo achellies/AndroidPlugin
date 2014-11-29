@@ -9,6 +9,19 @@
         android:id="@+id/button1"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:text="Invoke host method" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Hello, I&apos;m Plugin B." />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="启动Service" />
 
 </LinearLayout>

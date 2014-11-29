@@ -35,11 +35,22 @@ public class MainActivity extends PluginClientActivity {
             public void onClick(View v) {
                 Toast.makeText(mContext, "you clicked button",
                         Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(mContext, TestFragmentActivity.class);
+                Intent intent = new Intent(mContext.getApplicationContext(), TestFragmentActivity.class);
                 intent.putExtra("dl_extra", "from DL framework");
                 startActivityForResult(intent, 0);
             }
             
+        });
+        
+        findViewById(R.id.button2).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent service = new Intent(mContext, ClientAStartedService.class);
+				service.setAction("start");
+				mContext.startService(service);
+			}
+        	
         });
     }
 
