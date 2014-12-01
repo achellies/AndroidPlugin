@@ -6,7 +6,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="external-jars/android-support-v4.jar"/>
-	<classpathentry kind="lib" path="external-jars/pluginframework.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/PluginHostDemo"/>
+	<classpathentry kind="lib" path="external-jars/limemobile.plugin.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

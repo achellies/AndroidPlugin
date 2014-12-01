@@ -10,12 +10,33 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:text="Button" />
-    
-        <Button
+
+    <Button
         android:id="@+id/button2"
         android:layout_width="120dp"
-        android:layout_marginTop="10dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="启动Service" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="停止Service" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="绑定Service" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="启动其他插件的Service" />
 
 </LinearLayout>

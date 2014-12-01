@@ -35,163 +35,176 @@ import com.limemobile.app.plugin.internal.PluginClientManager;
 import com.limemobile.app.plugin.internal.PluginDelegateServiceImpl;
 
 public class PluginHostDelegateService extends Service implements
-        IPluginServiceDelegate {
-    protected IPluginService mDelegatedService;
-    protected PluginDelegateServiceImpl mDelegateImpl = new PluginDelegateServiceImpl(
-            this);
+		IPluginServiceDelegate {
+	protected IPluginService mDelegatedService;
+	protected PluginDelegateServiceImpl mDelegateImpl = new PluginDelegateServiceImpl(
+			this);
 
-    @Override
-    public void onCreate() {
-        mDelegatedService.onCreate();
-        super.onCreate();
-    }
+	@Override
+	public void onCreate() {
+		super.onCreate();
+	}
 
-    @Override
-    public void attach(IPluginService delegatedService) {
-        mDelegatedService = delegatedService;
-    }
+	@Override
+	public void attach(IPluginService delegatedService) {
+		mDelegatedService = delegatedService;
+	}
 
-    @Override
-    public AssetManager getAssets() {
-        return mDelegateImpl.getAssets() == null ? super.getAssets()
-                : mDelegateImpl.getAssets();
-    }
+	@Override
+	public AssetManager getAssets() {
+		return mDelegateImpl.getAssets() == null ? super.getAssets()
+				: mDelegateImpl.getAssets();
+	}
 
-    @Override
-    public Resources getResources() {
-        return mDelegateImpl.getResources() == null ? super.getResources()
-                : mDelegateImpl.getResources();
-    }
+	@Override
+	public Resources getResources() {
+		return mDelegateImpl.getResources() == null ? super.getResources()
+				: mDelegateImpl.getResources();
+	}
 
-    @Override
-    public Theme getTheme() {
-        return mDelegateImpl.getTheme() == null ? super.getTheme()
-                : mDelegateImpl.getTheme();
-    }
+	@Override
+	public Theme getTheme() {
+		return mDelegateImpl.getTheme() == null ? super.getTheme()
+				: mDelegateImpl.getTheme();
+	}
 
-    @Override
-    public ClassLoader getClassLoader() {
-        return mDelegateImpl.getClassLoader();
-    }
+	@Override
+	public ClassLoader getClassLoader() {
+		if (mDelegatedService == null) {
+			return super.getClassLoader();
+		}
+		return mDelegateImpl.getClassLoader();
+	}
 
-    @Override
-    @Deprecated
-    public void onStart(Intent intent, int startId) {
-        mDelegatedService.onStart(intent, startId);
-        super.onStart(intent, startId);
-    }
+	@Override
+	@Deprecated
+	public void onStart(Intent intent, int startId) {
+		if (mDelegatedService == null) {
+			mDelegateImpl.onCreate(intent);
+		}
+		mDelegatedService.onStart(intent, startId);
+		super.onStart(intent, startId);
+	}
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        mDelegatedService.onStart(intent, startId);
-        return super.onStartCommand(intent, flags, startId);
-    }
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		if (mDelegatedService == null) {
+			mDelegateImpl.onCreate(intent);
+		}
+		mDelegatedService.onStartCommand(intent, flags, startId);
+		return super.onStartCommand(intent, flags, startId);
+	}
 
-    @Override
-    public void onDestroy() {
-        mDelegatedService.onDestroy();
-        super.onDestroy();
-    }
+	@Override
+	public void onDestroy() {
+		mDelegatedService.onDestroy();
+		super.onDestroy();
+	}
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        mDelegatedService.onConfigurationChanged(newConfig);
-        super.onConfigurationChanged(newConfig);
-    }
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		mDelegatedService.onConfigurationChanged(newConfig);
+		super.onConfigurationChanged(newConfig);
+	}
 
-    @Override
-    public void onLowMemory() {
-        mDelegatedService.onLowMemory();
-        super.onLowMemory();
-    }
+	@Override
+	public void onLowMemory() {
+		mDelegatedService.onLowMemory();
+		super.onLowMemory();
+	}
 
-    @Override
-    public void onTrimMemory(int level) {
-        mDelegatedService.onTrimMemory(level);
-        super.onTrimMemory(level);
-    }
+	@Override
+	public void onTrimMemory(int level) {
+		mDelegatedService.onTrimMemory(level);
+		super.onTrimMemory(level);
+	}
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mDelegatedService.onBind(intent);
-    }
+	@Override
+	public IBinder onBind(Intent intent) {
+		if (mDelegatedService == null) {
+			mDelegateImpl.onCreate(intent);
+		}
+		return mDelegatedService.onBind(intent);
+	}
 
-    @Override
-    public boolean onUnbind(Intent intent) {
-        mDelegatedService.onUnbind(intent);
-        return super.onUnbind(intent);
-    }
+	@Override
+	public boolean onUnbind(Intent intent) {
+		mDelegatedService.onUnbind(intent);
+		return super.onUnbind(intent);
+	}
 
-    @Override
-    public void onRebind(Intent intent) {
-        mDelegatedService.onRebind(intent);
-        super.onRebind(intent);
-    }
+	@Override
+	public void onRebind(Intent intent) {
+		mDelegatedService.onRebind(intent);
+		super.onRebind(intent);
+	}
 
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        mDelegatedService.onTaskRemoved(rootIntent);
-        super.onTaskRemoved(rootIntent);
-    }
+	@Override
+	public void onTaskRemoved(Intent rootIntent) {
+		mDelegatedService.onTaskRemoved(rootIntent);
+		super.onTaskRemoved(rootIntent);
+	}
 
-    @Override
-    public ComponentName startService(Intent service) {
-        List<ResolveInfo> resolveInfos = getPackageManager()
-                .queryIntentServices(service, PackageManager.MATCH_DEFAULT_ONLY);
-        if (resolveInfos == null || resolveInfos.isEmpty()) {
-            service.setPackage(mDelegatedService.getPackageName());
-        } else {
-            return super.startService(service);
-        }
-        return PluginClientManager.sharedInstance(this).startService(this, service);
-    }
+	@Override
+	public ComponentName startService(Intent service) {
+		List<ResolveInfo> resolveInfos = getPackageManager()
+				.queryIntentServices(service, PackageManager.MATCH_DEFAULT_ONLY);
+		if (resolveInfos == null || resolveInfos.isEmpty()) {
+			service.setPackage(mDelegatedService.getPackageName());
+		} else {
+			return super.startService(service);
+		}
+		return PluginClientManager.sharedInstance(this).startService(this,
+				service);
+	}
 
-    @Override
-    public boolean stopService(Intent service) {
-        List<ResolveInfo> resolveInfos = getPackageManager()
-                .queryIntentServices(service, PackageManager.MATCH_DEFAULT_ONLY);
-        if (resolveInfos == null || resolveInfos.isEmpty()) {
-            service.setPackage(mDelegatedService.getPackageName());
-        } else {
-            return super.stopService(service);
-        }
-        return PluginClientManager.sharedInstance(this).stopService(this, service);
-    }
+	@Override
+	public boolean stopService(Intent service) {
+		List<ResolveInfo> resolveInfos = getPackageManager()
+				.queryIntentServices(service, PackageManager.MATCH_DEFAULT_ONLY);
+		if (resolveInfos == null || resolveInfos.isEmpty()) {
+			service.setPackage(mDelegatedService.getPackageName());
+		} else {
+			return super.stopService(service);
+		}
+		return PluginClientManager.sharedInstance(this).stopService(this,
+				service);
+	}
 
-    @Override
-    public void unbindService(ServiceConnection conn) {
-        mDelegatedService.unbindService(conn);
-        super.unbindService(conn);
-    }
+	@Override
+	public void unbindService(ServiceConnection conn) {
+		mDelegatedService.unbindService(conn);
+		super.unbindService(conn);
+	}
 
-    @Override
-    public void startActivity(Intent intent) {
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        List<ResolveInfo> resolveInfos = getPackageManager()
-                .queryIntentActivities(intent,
-                        PackageManager.MATCH_DEFAULT_ONLY);
-        if (resolveInfos == null || resolveInfos.isEmpty()) {
-            intent.setPackage(mDelegatedService.getPackageName());
-        } else {
-            super.startActivity(intent);
-            return;
-        }
-        PluginClientManager.sharedInstance(this).startActivity(this, intent);
-    }
+	@Override
+	public void startActivity(Intent intent) {
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		List<ResolveInfo> resolveInfos = getPackageManager()
+				.queryIntentActivities(intent,
+						PackageManager.MATCH_DEFAULT_ONLY);
+		if (resolveInfos == null || resolveInfos.isEmpty()) {
+			intent.setPackage(mDelegatedService.getPackageName());
+		} else {
+			super.startActivity(intent);
+			return;
+		}
+		PluginClientManager.sharedInstance(this).startActivity(this, intent);
+	}
 
-    @Override
-    public void startActivity(Intent intent, Bundle options) {
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        List<ResolveInfo> resolveInfos = getPackageManager()
-                .queryIntentActivities(intent,
-                        PackageManager.MATCH_DEFAULT_ONLY);
-        if (resolveInfos == null || resolveInfos.isEmpty()) {
-            intent.setPackage(mDelegatedService.getPackageName());
-        } else {
-            super.startActivity(intent, options);
-            return;
-        }
-        PluginClientManager.sharedInstance(this).startActivity(this, intent,
-                options);
-    }
+	@Override
+	public void startActivity(Intent intent, Bundle options) {
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		List<ResolveInfo> resolveInfos = getPackageManager()
+				.queryIntentActivities(intent,
+						PackageManager.MATCH_DEFAULT_ONLY);
+		if (resolveInfos == null || resolveInfos.isEmpty()) {
+			intent.setPackage(mDelegatedService.getPackageName());
+		} else {
+			super.startActivity(intent, options);
+			return;
+		}
+		PluginClientManager.sharedInstance(this).startActivity(this, intent,
+				options);
+	}
 }

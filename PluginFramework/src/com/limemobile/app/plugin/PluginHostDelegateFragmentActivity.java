@@ -49,12 +49,12 @@ public class PluginHostDelegateFragmentActivity extends FragmentActivity
 		implements IPluginActivityDelegate {
 
 	protected IPluginActivity mDelegatedActivity;
-	protected PluginDelegateActivityImpl mProxyImpl = new PluginDelegateActivityImpl(
+	protected PluginDelegateActivityImpl mDelegateImpl = new PluginDelegateActivityImpl(
 			this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		mProxyImpl.onCreate(getIntent());
+		mDelegateImpl.onCreate(getIntent());
 		super.onCreate(savedInstanceState);
 	}
 
@@ -65,25 +65,25 @@ public class PluginHostDelegateFragmentActivity extends FragmentActivity
 
 	@Override
 	public AssetManager getAssets() {
-		return mProxyImpl.getAssets() == null ? super.getAssets() : mProxyImpl
+		return mDelegateImpl.getAssets() == null ? super.getAssets() : mDelegateImpl
 				.getAssets();
 	}
 
 	@Override
 	public Resources getResources() {
-		return mProxyImpl.getResources() == null ? super.getResources()
-				: mProxyImpl.getResources();
+		return mDelegateImpl.getResources() == null ? super.getResources()
+				: mDelegateImpl.getResources();
 	}
 
 	@Override
 	public Theme getTheme() {
-		return mProxyImpl.getTheme() == null ? super.getTheme() : mProxyImpl
+		return mDelegateImpl.getTheme() == null ? super.getTheme() : mDelegateImpl
 				.getTheme();
 	}
 
 	@Override
 	public ClassLoader getClassLoader() {
-		return mProxyImpl.getClassLoader();
+		return mDelegateImpl.getClassLoader();
 	}
 
 	@Override

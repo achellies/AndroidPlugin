@@ -19,6 +19,6 @@ import com.limemobile.app.plugin.IPluginActivity;
 
 public interface IPluginActivityDelegate {
 
-    public void attach(IPluginActivity delegatedActivity);
+	public void attach(IPluginActivity delegatedActivity);
 
 }

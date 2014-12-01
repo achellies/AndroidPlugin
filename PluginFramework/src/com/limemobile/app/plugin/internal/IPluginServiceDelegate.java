@@ -19,6 +19,6 @@ import com.limemobile.app.plugin.IPluginService;
 
 public interface IPluginServiceDelegate {
 
-    public void attach(IPluginService delegatedService);
+	public void attach(IPluginService delegatedService);
 
 }

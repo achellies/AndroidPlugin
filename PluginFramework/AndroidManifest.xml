@@ -13,4 +13,9 @@
         android:theme="@style/AppTheme" >
     </application>
 
+    <activity android:name="com.limemobile.app.plugin.PluginHostDelegateActivity" />
+    <activity android:name="com.limemobile.app.plugin.PluginHostDelegateFragmentActivity" />
+
+    <service android:name="com.limemobile.app.plugin.PluginHostDelegateService" />
+
 </manifest>

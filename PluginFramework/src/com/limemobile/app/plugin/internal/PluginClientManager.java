@@ -23,6 +23,7 @@ import java.util.Map;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,7 @@ import android.text.TextUtils;
 
 import com.limemobile.app.plugin.PluginClientActivity;
 import com.limemobile.app.plugin.PluginClientFragmentActivity;
+import com.limemobile.app.plugin.PluginClientService;
 import com.limemobile.app.plugin.PluginHostDelegateActivity;
 import com.limemobile.app.plugin.PluginHostDelegateFragmentActivity;
 import com.limemobile.app.plugin.PluginHostDelegateService;
@@ -189,7 +191,8 @@ public class PluginClientManager {
 
 		String className = service.getComponent().getClassName();
 
-		return startPluginClientService(context, packageName, className);
+		return startPluginClientService(context, service, packageName,
+				className);
 	}
 
 	public boolean stopService(Context context, Intent service) {
@@ -204,7 +207,7 @@ public class PluginClientManager {
 
 		String className = service.getComponent().getClassName();
 
-		return stopPluginClientService(context, packageName, className);
+		return stopPluginClientService(context, service, packageName, className);
 	}
 
 	public boolean bindService(Context context, Intent service,
@@ -219,12 +222,18 @@ public class PluginClientManager {
 		}
 
 		String className = service.getComponent().getClassName();
-		return bindPluginClientService(context, packageName, className, conn,
-				flags);
+		return bindPluginClientService(context, service, packageName,
+				className, conn, flags);
 	}
 
 	public ComponentName startPluginClientService(Context context,
 			String packageName, String className) {
+		return startPluginClientService(context, new Intent(), packageName,
+				className);
+	}
+
+	public ComponentName startPluginClientService(Context context,
+			Intent service, String packageName, String className) {
 		PluginClientInfo pluginPackage = mPluginClientPackages.get(packageName);
 		if (pluginPackage == null) {
 			return null;
@@ -252,15 +261,14 @@ public class PluginClientManager {
 			}
 		}
 
-		Class<? extends Activity> serviceClass = null;
+		Class<? extends Service> serviceClass = null;
 
-		if (PluginHostDelegateService.class.isAssignableFrom(clazz)) {
-			serviceClass = PluginHostDelegateActivity.class;
+		if (PluginClientService.class.isAssignableFrom(clazz)) {
+			serviceClass = PluginHostDelegateService.class;
 		} else {
 			return null;
 		}
 
-		Intent service = new Intent();
 		service.putExtra(INTENT_EXTRA_PLUGIN_CLIENT_SERVICE_CLASS, className);
 		service.putExtra(INTENT_EXTRA_PLUGIN_CLIENT_PACKAGE_NAME, packageName);
 		service.setClass(context, serviceClass);
@@ -269,6 +277,13 @@ public class PluginClientManager {
 
 	public boolean bindPluginClientService(Context context, String packageName,
 			String className, ServiceConnection conn, int flags) {
+		return bindPluginClientService(context, new Intent(), packageName,
+				className, conn, flags);
+	}
+
+	public boolean bindPluginClientService(Context context, Intent service,
+			String packageName, String className, ServiceConnection conn,
+			int flags) {
 		PluginClientInfo pluginPackage = mPluginClientPackages.get(packageName);
 		if (pluginPackage == null) {
 			return false;
@@ -296,23 +311,29 @@ public class PluginClientManager {
 			}
 		}
 
-		Class<? extends Activity> serviceClass = null;
+		Class<? extends Service> serviceClass = null;
 
-		if (PluginHostDelegateService.class.isAssignableFrom(clazz)) {
-			serviceClass = PluginHostDelegateActivity.class;
+		if (PluginClientService.class.isAssignableFrom(clazz)) {
+			serviceClass = PluginHostDelegateService.class;
 		} else {
 			return false;
 		}
 
-		Intent service = new Intent();
 		service.putExtra(INTENT_EXTRA_PLUGIN_CLIENT_SERVICE_CLASS, className);
 		service.putExtra(INTENT_EXTRA_PLUGIN_CLIENT_PACKAGE_NAME, packageName);
 		service.setClass(context, serviceClass);
+
 		return context.bindService(service, conn, flags);
 	}
 
 	public boolean stopPluginClientService(Context context, String packageName,
 			String className) {
+		return stopPluginClientService(context, new Intent(), packageName,
+				className);
+	}
+
+	public boolean stopPluginClientService(Context context, Intent service,
+			String packageName, String className) {
 		PluginClientInfo pluginPackage = mPluginClientPackages.get(packageName);
 		if (pluginPackage == null) {
 			return false;
@@ -340,15 +361,14 @@ public class PluginClientManager {
 			}
 		}
 
-		Class<? extends Activity> serviceClass = null;
+		Class<? extends Service> serviceClass = null;
 
-		if (PluginHostDelegateService.class.isAssignableFrom(clazz)) {
-			serviceClass = PluginHostDelegateActivity.class;
+		if (PluginClientService.class.isAssignableFrom(clazz)) {
+			serviceClass = PluginHostDelegateService.class;
 		} else {
 			return false;
 		}
 
-		Intent service = new Intent();
 		service.putExtra(INTENT_EXTRA_PLUGIN_CLIENT_SERVICE_CLASS, className);
 		service.putExtra(INTENT_EXTRA_PLUGIN_CLIENT_PACKAGE_NAME, packageName);
 		service.setClass(context, serviceClass);
@@ -380,7 +400,7 @@ public class PluginClientManager {
 	}
 
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-	private void startPluginActivityForResult(Context context, Intent intent,
+	public void startPluginActivityForResult(Context context, Intent intent,
 			int requestCode, Bundle options) {
 		String packageName = intent.getPackage();
 		if (TextUtils.isEmpty(packageName)) {
@@ -395,7 +415,6 @@ public class PluginClientManager {
 
 		startPluginActivityForResult(context, intent, packageName, className,
 				requestCode, options);
-		return;
 	}
 
 	private void startPluginActivityForResult(Context context, Intent intent,

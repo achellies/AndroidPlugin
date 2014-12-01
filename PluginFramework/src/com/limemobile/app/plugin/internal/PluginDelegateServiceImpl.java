@@ -31,101 +31,101 @@ import android.text.TextUtils;
 import com.limemobile.app.plugin.IPluginService;
 
 public class PluginDelegateServiceImpl {
-    protected String mPluginClientServiceClass;
-    protected String mPluginClientPackageName;
+	protected String mPluginClientServiceClass;
+	protected String mPluginClientPackageName;
 
-    protected PluginClientInfo mPluginClient;
-    protected PluginClientManager mPluginManager;
+	protected PluginClientInfo mPluginClient;
+	protected PluginClientManager mPluginManager;
 
-    protected AssetManager mAssetManager;
-    protected Resources mResources;
-    protected Theme mTheme;
+	protected AssetManager mAssetManager;
+	protected Resources mResources;
+	protected Theme mTheme;
 
-    protected ServiceInfo mServiceInfo;
-    protected Service mPluginHostService;
-    protected IPluginService mDelegatedService;
+	protected ServiceInfo mServiceInfo;
+	protected Service mPluginHostService;
+	protected IPluginService mDelegatedService;
 
-    public PluginDelegateServiceImpl(Service service) {
-        mPluginHostService = service;
-    }
+	public PluginDelegateServiceImpl(Service service) {
+		mPluginHostService = service;
+	}
 
-    public void onCreate(Intent intent) {
-        mPluginClientPackageName = intent
-                .getStringExtra(PluginClientManager.INTENT_EXTRA_PLUGIN_CLIENT_PACKAGE_NAME);
-        mPluginClientServiceClass = intent
-                .getStringExtra(PluginClientManager.INTENT_EXTRA_PLUGIN_CLIENT_SERVICE_CLASS);
+	public void onCreate(Intent intent) {
+		mPluginClientPackageName = intent
+				.getStringExtra(PluginClientManager.INTENT_EXTRA_PLUGIN_CLIENT_PACKAGE_NAME);
+		mPluginClientServiceClass = intent
+				.getStringExtra(PluginClientManager.INTENT_EXTRA_PLUGIN_CLIENT_SERVICE_CLASS);
 
-        mPluginManager = PluginClientManager.sharedInstance(mPluginHostService);
-        mPluginClient = mPluginManager
-                .getPluginClient(mPluginClientPackageName);
-        mAssetManager = mPluginClient.mAssetManager;
-        mResources = mPluginClient.mResources;
+		mPluginManager = PluginClientManager.sharedInstance(mPluginHostService);
+		mPluginClient = mPluginManager
+				.getPluginClient(mPluginClientPackageName);
+		mAssetManager = mPluginClient.mAssetManager;
+		mResources = mPluginClient.mResources;
 
-        initializeServiceInfo();
-        handleServiceInfo();
-        launchTargetService();
-    }
+		initializeServiceInfo();
+		handleServiceInfo();
+		launchTargetService();
+	}
 
-    private void initializeServiceInfo() {
-        PackageInfo packageInfo = mPluginClient.mClientPackageInfo;
-        if ((packageInfo.services != null) && (packageInfo.services.length > 0)) {
-            if (TextUtils.isEmpty(mPluginClientServiceClass)) {
-                mPluginClientServiceClass = packageInfo.services[0].name;
-            }
-            for (ServiceInfo a : packageInfo.services) {
-                if (a.name.equals(mPluginClientServiceClass)) {
-                    mServiceInfo = a;
-                }
-            }
-        }
-    }
+	private void initializeServiceInfo() {
+		PackageInfo packageInfo = mPluginClient.mClientPackageInfo;
+		if ((packageInfo.services != null) && (packageInfo.services.length > 0)) {
+			if (TextUtils.isEmpty(mPluginClientServiceClass)) {
+				mPluginClientServiceClass = packageInfo.services[0].name;
+			}
+			for (ServiceInfo a : packageInfo.services) {
+				if (a.name.equals(mPluginClientServiceClass)) {
+					mServiceInfo = a;
+				}
+			}
+		}
+	}
 
-    private void handleServiceInfo() {
-        Theme superTheme = mPluginHostService.getTheme();
-        mTheme = mResources.newTheme();
-        mTheme.setTo(superTheme);
-    }
+	private void handleServiceInfo() {
+		Theme superTheme = mPluginHostService.getTheme();
+		mTheme = mResources.newTheme();
+		mTheme.setTo(superTheme);
+	}
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    protected void launchTargetService() {
-        try {
-            Class<?> localClass = getClassLoader().loadClass(
-                    mPluginClientServiceClass);
-            Constructor<?> localConstructor = localClass
-                    .getConstructor(new Class[] {});
-            Object instance = localConstructor.newInstance(new Object[] {});
-            if (!(instance instanceof IPluginService)) {
-                throw new IllegalArgumentException();
-            }
-            mDelegatedService = (IPluginService) instance;
-            ((IPluginServiceDelegate) mPluginHostService)
-                    .attach(mDelegatedService);
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+	protected void launchTargetService() {
+		try {
+			Class<?> localClass = getClassLoader().loadClass(
+					mPluginClientServiceClass);
+			Constructor<?> localConstructor = localClass
+					.getConstructor(new Class[] {});
+			Object instance = localConstructor.newInstance(new Object[] {});
+			if (!(instance instanceof IPluginService)) {
+				throw new IllegalArgumentException();
+			}
+			mDelegatedService = (IPluginService) instance;
+			((IPluginServiceDelegate) mPluginHostService)
+					.attach(mDelegatedService);
 
-            mDelegatedService.setDelegate(mPluginHostService, mPluginClient);
+			mDelegatedService.setDelegate(mPluginHostService, mPluginClient);
 
-            mDelegatedService.onCreate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+			mDelegatedService.onCreate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    public ClassLoader getClassLoader() {
-        return mPluginClient.mClassLoader;
-    }
+	public ClassLoader getClassLoader() {
+		return mPluginClient.mClassLoader;
+	}
 
-    public AssetManager getAssets() {
-        return mAssetManager;
-    }
+	public AssetManager getAssets() {
+		return mAssetManager;
+	}
 
-    public Resources getResources() {
-        return mResources;
-    }
+	public Resources getResources() {
+		return mResources;
+	}
 
-    public Theme getTheme() {
-        return mTheme;
-    }
+	public Theme getTheme() {
+		return mTheme;
+	}
 
-    public IPluginService getRemoteService() {
-        return mDelegatedService;
-    }
+	public IPluginService getRemoteService() {
+		return mDelegatedService;
+	}
 }

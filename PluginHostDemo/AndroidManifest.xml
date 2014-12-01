@@ -65,7 +65,7 @@
             android:label="@string/app_name" >
         </activity>
 
-        <service android:name="com.limemobile.app.plugin.PluginHostDelegateService" >
+        <service android:name="com.limemobile.app.plugin.PluginHostDelegateService" android:enabled="true" >
         </service>
     </application>
 
