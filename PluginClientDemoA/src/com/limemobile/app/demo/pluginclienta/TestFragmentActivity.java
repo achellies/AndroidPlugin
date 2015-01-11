@@ -1,5 +1,6 @@
 package com.limemobile.app.demo.pluginclienta;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -40,7 +41,7 @@ public class TestFragmentActivity extends PluginClientFragmentActivity
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(mContext, "quit", Toast.LENGTH_SHORT).show();
-				mContext.setResult(RESULT_FIRST_USER);
+				mContext.setResult(RESULT_FIRST_USER, new Intent());
 				mContext.finish();
 			}
 		});
