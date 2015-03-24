@@ -60,13 +60,27 @@ public class PluginClientFragmentActivity extends FragmentActivity implements
 		mContext = mProxyActivity;
 	}
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		if (mProxyActivity == null) {
-			mContext = this;
-			super.onCreate(savedInstanceState);
-		}
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        if (mProxyActivity == null) {
+            mContext = this;
+            WindowManager.LayoutParams parmas = mContext.getWindow()
+                    .getAttributes();
+            parmas.softInputMode = getwindowSoftInputMode();
+            super.onCreate(savedInstanceState);
+        } else if (mContext != null) {
+            WindowManager.LayoutParams parmas = mContext.getWindow()
+                    .getAttributes();
+            parmas.softInputMode = getwindowSoftInputMode();
+        }
+    }
+
+    @Override
+    public void onPostCreate(Bundle savedInstanceState) {
+        if (mProxyActivity == null) {
+            super.onPostCreate(savedInstanceState);
+        }
+    }
 
 	@Override
 	public void setContentView(View view) {
@@ -276,12 +290,19 @@ public class PluginClientFragmentActivity extends FragmentActivity implements
 		}
 	}
 
-	@Override
-	public void onPause() {
-		if (mProxyActivity == null) {
-			super.onPause();
-		}
-	}
+    @Override
+    public void onPostResume() {
+        if (mProxyActivity == null) {
+            super.onPostResume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (mProxyActivity == null) {
+            super.onPause();
+        }
+    }
 
 	@Override
 	public void onStop() {
@@ -373,24 +394,25 @@ public class PluginClientFragmentActivity extends FragmentActivity implements
 			return;
 		}
 
-		List<ResolveInfo> resolveInfos = mContext.getPackageManager()
-				.queryIntentActivities(intent,
-						PackageManager.MATCH_DEFAULT_ONLY);
-		if (resolveInfos != null && !resolveInfos.isEmpty()) {
-			super.startActivityForResult(intent, requestCode, options);
-		} else {
-			intent.setPackage(mPluginPackage.mPackageName);
-			PluginClientManager.sharedInstance(mContext)
-					.startActivityForResult(mContext, intent, requestCode,
-							options);
-		}
-	}
+        List<ResolveInfo> resolveInfos = mContext.getPackageManager()
+                .queryIntentActivities(intent,
+                        PackageManager.MATCH_DEFAULT_ONLY);
+        if (resolveInfos != null && !resolveInfos.isEmpty()) {
+            super.startActivityForResult(intent, requestCode, options);
+        } else {
+            intent.setPackage(mPluginPackage.mPackageName);
+            PluginClientManager.sharedInstance(mContext)
+                    .startActivityForResult(mContext, intent, requestCode,
+                            options);
+        }
+    }
 
-	@Override
-	public void startActivity(Intent intent) {
-		if (mProxyActivity == null) {
-			super.startActivity(intent);
-		}
+    @Override
+    public void startActivity(Intent intent) {
+        if (mProxyActivity == null) {
+            super.startActivity(intent);
+            return;
+        }
 
 		List<ResolveInfo> resolveInfos = mContext.getPackageManager()
 				.queryIntentActivities(intent,
@@ -404,11 +426,12 @@ public class PluginClientFragmentActivity extends FragmentActivity implements
 		}
 	}
 
-	@Override
-	public void startActivity(Intent intent, Bundle options) {
-		if (mProxyActivity == null) {
-			super.startActivity(intent, options);
-		}
+    @Override
+    public void startActivity(Intent intent, Bundle options) {
+        if (mProxyActivity == null) {
+            super.startActivity(intent, options);
+            return;
+        }
 
 		List<ResolveInfo> resolveInfos = mContext.getPackageManager()
 				.queryIntentActivities(intent,
@@ -485,4 +508,7 @@ public class PluginClientFragmentActivity extends FragmentActivity implements
 		return mProxyActivity.getSupportLoaderManager();
 	}
 
+    protected int getwindowSoftInputMode() {
+        return WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN;
+    }
 }

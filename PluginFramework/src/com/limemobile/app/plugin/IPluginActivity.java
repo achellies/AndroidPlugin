@@ -34,13 +34,17 @@ public interface IPluginActivity {
 
 	public void onCreate(Bundle savedInstanceState);
 
-	public void onStart();
+    public void onPostCreate(Bundle savedInstanceState);
+
+    public void onStart();
 
 	public void onRestart();
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data);
 
-	public void onResume();
+    public void onResume();
+
+    public void onPostResume();
 
 	public void onPause();
 

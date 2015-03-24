@@ -57,10 +57,14 @@ public class PluginHostDelegateActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 	}
 
-	@Override
-	public void attach(IPluginActivity delegatedActivity) {
-		mDelegatedActivity = delegatedActivity;
-	}
+    @Override
+    public void attach(IPluginActivity delegatedActivity) {
+        mDelegatedActivity = delegatedActivity;
+    }
+
+    public IPluginActivity getRemoteActivity() {
+        return mDelegatedActivity;
+    }
 
 	@Override
 	public AssetManager getAssets() {
@@ -85,11 +89,23 @@ public class PluginHostDelegateActivity extends Activity implements
 		return mDelegateImpl.getClassLoader();
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		mDelegatedActivity.onActivityResult(requestCode, resultCode, data);
-		super.onActivityResult(requestCode, resultCode, data);
-	}
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mDelegatedActivity.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        mDelegatedActivity.onPostCreate(savedInstanceState);
+        super.onPostCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onPostResume() {
+        mDelegatedActivity.onPostResume();
+        super.onPostResume();
+    }
 
 	@Override
 	protected void onStart() {
@@ -163,11 +179,13 @@ public class PluginHostDelegateActivity extends Activity implements
 		return mDelegatedActivity.onKeyUp(keyCode, event);
 	}
 
-	@Override
-	public void onWindowAttributesChanged(LayoutParams params) {
-		mDelegatedActivity.onWindowAttributesChanged(params);
-		super.onWindowAttributesChanged(params);
-	}
+    @Override
+    public void onWindowAttributesChanged(LayoutParams params) {
+        if (mDelegatedActivity != null) {
+            mDelegatedActivity.onWindowAttributesChanged(params);
+        }
+        super.onWindowAttributesChanged(params);
+    }
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
@@ -218,18 +236,19 @@ public class PluginHostDelegateActivity extends Activity implements
 				intent, requestCode, options);
 	}
 
-	@Override
-	public void startActivity(Intent intent) {
-		List<ResolveInfo> resolveInfos = getPackageManager()
-				.queryIntentActivities(intent,
-						PackageManager.MATCH_DEFAULT_ONLY);
-		if (resolveInfos == null || resolveInfos.isEmpty()) {
-			intent.setPackage(mDelegatedActivity.getPackageName());
-		} else {
-			super.startActivity(intent);
-		}
-		PluginClientManager.sharedInstance(this).startActivity(this, intent);
-	}
+    @Override
+    public void startActivity(Intent intent) {
+        List<ResolveInfo> resolveInfos = getPackageManager()
+                .queryIntentActivities(intent,
+                        PackageManager.MATCH_DEFAULT_ONLY);
+        if (resolveInfos == null || resolveInfos.isEmpty()) {
+            intent.setPackage(mDelegatedActivity.getPackageName());
+        } else {
+            super.startActivity(intent);
+            return;
+        }
+        PluginClientManager.sharedInstance(this).startActivity(this, intent);
+    }
 
 	@Override
 	public void startActivity(Intent intent, Bundle options) {

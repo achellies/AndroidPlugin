@@ -59,13 +59,27 @@ public class PluginClientActivity extends Activity implements IPluginActivity {
 		mContext = mProxyActivity;
 	}
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		if (mProxyActivity == null) {
-			mContext = this;
-			super.onCreate(savedInstanceState);
-		}
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        if (mProxyActivity == null) {
+            mContext = this;
+            WindowManager.LayoutParams parmas = mContext.getWindow()
+                    .getAttributes();
+            parmas.softInputMode = getwindowSoftInputMode();
+            super.onCreate(savedInstanceState);
+        } else if (mContext != null) {
+            WindowManager.LayoutParams parmas = mContext.getWindow()
+                    .getAttributes();
+            parmas.softInputMode = getwindowSoftInputMode();
+        }
+    }
+
+    @Override
+    public void onPostCreate(Bundle savedInstanceState) {
+        if (mProxyActivity == null) {
+            super.onPostCreate(savedInstanceState);
+        }
+    }
 
 	@Override
 	public void setContentView(View view) {
@@ -284,12 +298,19 @@ public class PluginClientActivity extends Activity implements IPluginActivity {
 		}
 	}
 
-	@Override
-	public void onPause() {
-		if (mProxyActivity == null) {
-			super.onPause();
-		}
-	}
+    @Override
+    public void onPostResume() {
+        if (mProxyActivity == null) {
+            super.onPostResume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (mProxyActivity == null) {
+            super.onPause();
+        }
+    }
 
 	@Override
 	public void onStop() {
@@ -506,4 +527,7 @@ public class PluginClientActivity extends Activity implements IPluginActivity {
 		}
 	}
 
+    protected int getwindowSoftInputMode() {
+        return WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN;
+    }
 }

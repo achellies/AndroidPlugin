@@ -86,148 +86,148 @@ public class PluginHostApplication extends Application {
 	protected void loadPluginClients() {
 	}
 
-	// TODO 如果client中Application
-	// Context来启动Activity和Service的话，因为没法获取到启动的包名，所以这里的方法有些ugly
-	@Override
-	public void startActivity(Intent intent) {
-		List<ResolveInfo> resolveInfos = getPackageManager()
-				.queryIntentActivities(intent,
-						PackageManager.MATCH_DEFAULT_ONLY);
-		if (resolveInfos != null && !resolveInfos.isEmpty()) {
-			super.startActivity(intent);
-		} else {
-			ComponentName componentName = intent.getComponent();
-			if (componentName == null) {
-				throw new NullPointerException("Not Support Null ComponentName");
-			}
-			Collection<PluginClientInfo> clients = PluginClientManager
-					.sharedInstance(this).getPluginClients();
-			if (!clients.isEmpty()) {
-				Iterator<PluginClientInfo> iterator = clients.iterator();
-
-				while (iterator.hasNext()) {
-					PluginClientInfo clientInfo = iterator.next();
-
-					ActivityInfo[] activities = clientInfo.mClientPackageInfo.activities;
-					if (activities != null) {
-						for (ActivityInfo activityInfo : activities) {
-							if (activityInfo.name.equals(componentName
-									.getClassName())) {
-								intent.setPackage(clientInfo.mPackageName);
-							}
-						}
-					}
-				}
-			}
-			PluginClientManager.sharedInstance(this)
-					.startActivity(this, intent);
-		}
-	}
-
-	@Override
-	public void startActivity(Intent intent, Bundle options) {
-		List<ResolveInfo> resolveInfos = getPackageManager()
-				.queryIntentActivities(intent,
-						PackageManager.MATCH_DEFAULT_ONLY);
-		if (resolveInfos != null && !resolveInfos.isEmpty()) {
-			super.startActivity(intent, options);
-		} else {
-			ComponentName componentName = intent.getComponent();
-			if (componentName == null) {
-				throw new NullPointerException("Not Support Null ComponentName");
-			}
-			Collection<PluginClientInfo> clients = PluginClientManager
-					.sharedInstance(this).getPluginClients();
-			if (!clients.isEmpty()) {
-				Iterator<PluginClientInfo> iterator = clients.iterator();
-
-				while (iterator.hasNext()) {
-					PluginClientInfo clientInfo = iterator.next();
-
-					ActivityInfo[] activities = clientInfo.mClientPackageInfo.activities;
-					if (activities != null) {
-						for (ActivityInfo activityInfo : activities) {
-							if (activityInfo.name.equals(componentName
-									.getClassName())) {
-								intent.setPackage(clientInfo.mPackageName);
-							}
-						}
-					}
-				}
-			}
-			PluginClientManager.sharedInstance(this).startActivity(this,
-					intent, options);
-		}
-	}
-
-	@Override
-	public ComponentName startService(Intent service) {
-		List<ResolveInfo> resolveInfos = getPackageManager()
-				.queryIntentServices(service, PackageManager.MATCH_DEFAULT_ONLY);
-		if (resolveInfos != null && !resolveInfos.isEmpty()) {
-			return super.startService(service);
-		} else {
-			ComponentName componentName = service.getComponent();
-			if (componentName == null) {
-				throw new NullPointerException("Not Support Null ComponentName");
-			}
-			Collection<PluginClientInfo> clients = PluginClientManager
-					.sharedInstance(this).getPluginClients();
-			if (!clients.isEmpty()) {
-				Iterator<PluginClientInfo> iterator = clients.iterator();
-
-				while (iterator.hasNext()) {
-					PluginClientInfo clientInfo = iterator.next();
-
-					ServiceInfo[] services = clientInfo.mClientPackageInfo.services;
-					if (services != null) {
-						for (ServiceInfo serviceInfo : services) {
-							if (serviceInfo.name.equals(componentName
-									.getClassName())) {
-								service.setPackage(clientInfo.mPackageName);
-							}
-						}
-					}
-				}
-			}
-		}
-		return PluginClientManager.sharedInstance(this).startService(this,
-				service);
-	}
-
-	@Override
-	public boolean stopService(Intent service) {
-		List<ResolveInfo> resolveInfos = getPackageManager()
-				.queryIntentServices(service, PackageManager.MATCH_DEFAULT_ONLY);
-		if (resolveInfos != null && !resolveInfos.isEmpty()) {
-			return super.stopService(service);
-		} else {
-			ComponentName componentName = service.getComponent();
-			if (componentName == null) {
-				throw new NullPointerException("Not Support Null ComponentName");
-			}
-			Collection<PluginClientInfo> clients = PluginClientManager
-					.sharedInstance(this).getPluginClients();
-			if (!clients.isEmpty()) {
-				Iterator<PluginClientInfo> iterator = clients.iterator();
-
-				while (iterator.hasNext()) {
-					PluginClientInfo clientInfo = iterator.next();
-
-					ServiceInfo[] services = clientInfo.mClientPackageInfo.services;
-					if (services != null) {
-						for (ServiceInfo serviceInfo : services) {
-							if (serviceInfo.name.equals(componentName
-									.getClassName())) {
-								service.setPackage(clientInfo.mPackageName);
-							}
-						}
-					}
-				}
-			}
-		}
-		return PluginClientManager.sharedInstance(this).stopService(this,
-				service);
-	}
+    // // TODO 如果client中Application
+    // // Context来启动Activity和Service的话，因为没法获取到启动的包名，所以这里的方法有些ugly
+    // @Override
+    // public void startActivity(Intent intent) {
+    // List<ResolveInfo> resolveInfos = getPackageManager()
+    // .queryIntentActivities(intent,
+    // PackageManager.MATCH_DEFAULT_ONLY);
+    // if (resolveInfos != null && !resolveInfos.isEmpty()) {
+    // super.startActivity(intent);
+    // } else {
+    // ComponentName componentName = intent.getComponent();
+    // if (componentName == null) {
+    // throw new NullPointerException("Not Support Null ComponentName");
+    // }
+    // Collection<PluginClientInfo> clients = PluginClientManager
+    // .sharedInstance(this).getPluginClients();
+    // if (!clients.isEmpty()) {
+    // Iterator<PluginClientInfo> iterator = clients.iterator();
+    //
+    // while (iterator.hasNext()) {
+    // PluginClientInfo clientInfo = iterator.next();
+    //
+    // ActivityInfo[] activities = clientInfo.mClientPackageInfo.activities;
+    // if (activities != null) {
+    // for (ActivityInfo activityInfo : activities) {
+    // if (activityInfo.name.equals(componentName
+    // .getClassName())) {
+    // intent.setPackage(clientInfo.mPackageName);
+    // }
+    // }
+    // }
+    // }
+    // }
+    // PluginClientManager.sharedInstance(this)
+    // .startActivity(this, intent);
+    // }
+    // }
+    //
+    // @Override
+    // public void startActivity(Intent intent, Bundle options) {
+    // List<ResolveInfo> resolveInfos = getPackageManager()
+    // .queryIntentActivities(intent,
+    // PackageManager.MATCH_DEFAULT_ONLY);
+    // if (resolveInfos != null && !resolveInfos.isEmpty()) {
+    // super.startActivity(intent, options);
+    // } else {
+    // ComponentName componentName = intent.getComponent();
+    // if (componentName == null) {
+    // throw new NullPointerException("Not Support Null ComponentName");
+    // }
+    // Collection<PluginClientInfo> clients = PluginClientManager
+    // .sharedInstance(this).getPluginClients();
+    // if (!clients.isEmpty()) {
+    // Iterator<PluginClientInfo> iterator = clients.iterator();
+    //
+    // while (iterator.hasNext()) {
+    // PluginClientInfo clientInfo = iterator.next();
+    //
+    // ActivityInfo[] activities = clientInfo.mClientPackageInfo.activities;
+    // if (activities != null) {
+    // for (ActivityInfo activityInfo : activities) {
+    // if (activityInfo.name.equals(componentName
+    // .getClassName())) {
+    // intent.setPackage(clientInfo.mPackageName);
+    // }
+    // }
+    // }
+    // }
+    // }
+    // PluginClientManager.sharedInstance(this).startActivity(this,
+    // intent, options);
+    // }
+    // }
+    //
+    // @Override
+    // public ComponentName startService(Intent service) {
+    // List<ResolveInfo> resolveInfos = getPackageManager()
+    // .queryIntentServices(service, PackageManager.MATCH_DEFAULT_ONLY);
+    // if (resolveInfos != null && !resolveInfos.isEmpty()) {
+    // return super.startService(service);
+    // } else {
+    // ComponentName componentName = service.getComponent();
+    // if (componentName == null) {
+    // throw new NullPointerException("Not Support Null ComponentName");
+    // }
+    // Collection<PluginClientInfo> clients = PluginClientManager
+    // .sharedInstance(this).getPluginClients();
+    // if (!clients.isEmpty()) {
+    // Iterator<PluginClientInfo> iterator = clients.iterator();
+    //
+    // while (iterator.hasNext()) {
+    // PluginClientInfo clientInfo = iterator.next();
+    //
+    // ServiceInfo[] services = clientInfo.mClientPackageInfo.services;
+    // if (services != null) {
+    // for (ServiceInfo serviceInfo : services) {
+    // if (serviceInfo.name.equals(componentName
+    // .getClassName())) {
+    // service.setPackage(clientInfo.mPackageName);
+    // }
+    // }
+    // }
+    // }
+    // }
+    // }
+    // return PluginClientManager.sharedInstance(this).startService(this,
+    // service);
+    // }
+    //
+    // @Override
+    // public boolean stopService(Intent service) {
+    // List<ResolveInfo> resolveInfos = getPackageManager()
+    // .queryIntentServices(service, PackageManager.MATCH_DEFAULT_ONLY);
+    // if (resolveInfos != null && !resolveInfos.isEmpty()) {
+    // return super.stopService(service);
+    // } else {
+    // ComponentName componentName = service.getComponent();
+    // if (componentName == null) {
+    // throw new NullPointerException("Not Support Null ComponentName");
+    // }
+    // Collection<PluginClientInfo> clients = PluginClientManager
+    // .sharedInstance(this).getPluginClients();
+    // if (!clients.isEmpty()) {
+    // Iterator<PluginClientInfo> iterator = clients.iterator();
+    //
+    // while (iterator.hasNext()) {
+    // PluginClientInfo clientInfo = iterator.next();
+    //
+    // ServiceInfo[] services = clientInfo.mClientPackageInfo.services;
+    // if (services != null) {
+    // for (ServiceInfo serviceInfo : services) {
+    // if (serviceInfo.name.equals(componentName
+    // .getClassName())) {
+    // service.setPackage(clientInfo.mPackageName);
+    // }
+    // }
+    // }
+    // }
+    // }
+    // }
+    // return PluginClientManager.sharedInstance(this).stopService(this,
+    // service);
+    // }
 
 }

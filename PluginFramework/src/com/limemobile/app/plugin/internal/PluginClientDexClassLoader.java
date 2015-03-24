@@ -24,14 +24,35 @@ public class PluginClientDexClassLoader extends DexClassLoader {
 		super(dexPath, optimizedDirectory, libraryPath, parent);
 	}
 
-	@Override
-	public Class<?> loadClass(String className) throws ClassNotFoundException {
-		return super.loadClass(className);
-	}
+    @Override
+    public Class<?> loadClass(String className) throws ClassNotFoundException {
+        ClassLoader parentCl = this.getParent();
+        Class<?> clazz = null;
+        try {
+            clazz = parentCl.loadClass(className);
+            if (clazz == null) {
+                parentCl = parentCl.getParent();
+                if (parentCl != null) {
+                    clazz = parentCl.loadClass(className);
+                }
+            }
+        } catch (ClassNotFoundException e) {
+        }
 
-	@Override
-	protected Class<?> findClass(String name) throws ClassNotFoundException {
-		return super.findClass(name);
-	}
+        if (clazz == null) {
+            clazz = findClass(className);
+        }
+        
+        if (clazz == null) {
+            return super.loadClass(className);
+        }
+
+        return clazz;
+    }
+
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        return super.findClass(name);
+    }
 
 }
