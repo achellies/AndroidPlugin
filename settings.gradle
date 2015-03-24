@@ -1,0 +1,4 @@
+include ':PluginClientDemoA'
+include ':PluginHostDemo'
+include ':PluginFramework'
+include ':PluginClientDemoB'

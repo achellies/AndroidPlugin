@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="limemobile.plugin">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/PluginFramework/build/limemobile.plugin.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
