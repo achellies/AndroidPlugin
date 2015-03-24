@@ -34,8 +34,13 @@ android {
 }
 
 dependencies {
+    // 作为插件时的配置
     provided files('../PluginFramework/build/limemobile.plugin.jar')
     provided files('external-jars/android-support-v4.jar')
+
+    //下面是单独运行的配置
+    //compile fileTree(dir: 'libs', include: '*.jar')
+    //compile project(':PluginFramework')
 }
 
 task beforeBuild(dependsOn: ':PluginFramework:buildLib') << {

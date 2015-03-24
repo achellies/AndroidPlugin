@@ -209,42 +209,41 @@ public class PluginClientManager {
             nativeLibraryDir = "/data/data/" + ai.packageName + "/lib/";
         }
         ClassLoader cl = null;
-//        Object object = null;
-//        try {
-//            /**
-//             * 一个Android应用在启动时，首先Dalvik加载的是Android自身的框架。之后会加载APK包中的classes.
-//             * dex文件到全局的ClassLoader
-//             * 。最后根据AndroidManifest.xml中指定的类名，创建对应的Activity实例来展示UI。
-//             *
-//             * Android通过dalvik.system.DexClassLoader提供了动态加载Java代码的能力，
-//             * 如果我们能够在Activity启动之前
-//             * ，替换全局的ClassLoader（Application.mBase.mPackageInfo.mClassLoader）
-//             * 这里主要是解决多个apk共用一个jar包的问题（例如：多个plugin client共用一个通用的jar）
-//             *
-//             * http://jcodecraeer.com/a/anzhuokaifa/androidkaifa/2014/1223/2206.html
-//             * http://www.trinea.cn/android/java-loader-common-class/
-//             * https://github.com/houkx/android-pluginmgr
-//             * http://blog.csdn.net/hkxxx/article/details/42194387
-//             * http://blog.csdn.net/czh0766/article/details/6736826
-//             * https://github.com/singwhatiwanna/dynamic-load-apk
-//             * http://blog.csdn.net/jiangwei0910410003/article/details/41384667
-//             */
-//            object = ReflectionUtils.getFieldValue(mContext.getApplicationContext(),
-//                    "mBase.mPackageInfo", true);
-//            ReflectFieldAccessor<ClassLoader> fieldAccessor = new ReflectFieldAccessor<ClassLoader>(
-//                    object, "mClassLoader");
-//            cl = fieldAccessor.get();
-//        } catch (IllegalAccessException e) {
-//        } catch (IllegalArgumentException e) {
-//        } catch (NoSuchFieldException e) {
-//        } finally {
-//            if (cl == null) {
-//                cl = mContext.getClassLoader();
-//            }
-//        }
-        cl = mContext.getClassLoader();
+        Object object = null;
+        try {
+            /**
+             * 一个Android应用在启动时，首先Dalvik加载的是Android自身的框架。之后会加载APK包中的classes.
+             * dex文件到全局的ClassLoader
+             * 。最后根据AndroidManifest.xml中指定的类名，创建对应的Activity实例来展示UI。
+             *
+             * Android通过dalvik.system.DexClassLoader提供了动态加载Java代码的能力，
+             * 如果我们能够在Activity启动之前
+             * ，替换全局的ClassLoader（Application.mBase.mPackageInfo.mClassLoader）
+             * 这里主要是解决多个apk共用一个jar包的问题（例如：多个plugin client共用一个通用的jar）
+             *
+             * http://jcodecraeer.com/a/anzhuokaifa/androidkaifa/2014/1223/2206.html
+             * http://www.trinea.cn/android/java-loader-common-class/
+             * https://github.com/houkx/android-pluginmgr
+             * http://blog.csdn.net/hkxxx/article/details/42194387
+             * http://blog.csdn.net/czh0766/article/details/6736826
+             * https://github.com/singwhatiwanna/dynamic-load-apk
+             * http://blog.csdn.net/jiangwei0910410003/article/details/41384667
+             */
+            object = ReflectionUtils.getFieldValue(mContext.getApplicationContext(),
+                    "mBase.mPackageInfo", true);
+            ReflectFieldAccessor<ClassLoader> fieldAccessor = new ReflectFieldAccessor<ClassLoader>(
+                    object, "mClassLoader");
+            cl = fieldAccessor.get();
+        } catch (IllegalAccessException e) {
+        } catch (IllegalArgumentException e) {
+        } catch (NoSuchFieldException e) {
+        } finally {
+            if (cl == null) {
+                cl = mContext.getClassLoader();
+            }
+        }
         PluginClientDexClassLoader dcl = new PluginClientDexClassLoader(
-                dexPath, dexOutputPath, nativeLibraryDir, cl.getParent());
+                dexPath, dexOutputPath, nativeLibraryDir, cl);
 
 //        try {
 //            Field f = ClassLoader.class.getDeclaredField("parent");
